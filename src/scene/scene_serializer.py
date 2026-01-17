@@ -1,9 +1,11 @@
 import json
-from typing import Dict, Any, Optional
-from .scene import Scene
-from .layer import Layer
+from typing import Any, Dict, Optional
+
 from .entity import Entity
+from .layer import Layer
+from .scene import Scene
 from .tilemap import Tilemap
+
 
 class SceneSerializer:
     """
@@ -24,8 +26,6 @@ class SceneSerializer:
         """
         scene_data = {
             "name": scene.name,
-            "width": scene.width,
-            "height": scene.height,
             "layers": [],
             "entities": [],
             "tilemaps": [],
@@ -37,7 +37,6 @@ class SceneSerializer:
                 "name": layer.name,
                 "visible": layer.visible,
                 "opacity": layer.opacity,
-                "type": layer.type,
             }
             scene_data["layers"].append(layer_data)
 
@@ -80,8 +79,6 @@ class SceneSerializer:
         """
         scene = Scene(
             name=scene_data["name"],
-            width=scene_data["width"],
-            height=scene_data["height"],
         )
 
         # Deserialize layers
@@ -90,7 +87,6 @@ class SceneSerializer:
                 name=layer_data["name"],
                 visible=layer_data["visible"],
                 opacity=layer_data["opacity"],
-                type=layer_data["type"],
             )
             scene.layers.append(layer)
 
@@ -111,7 +107,7 @@ class SceneSerializer:
             tilemap = Tilemap(
                 name=tilemap_data["name"],
                 tile_width=tilemap_data["tile_width"],
-                tilemap_data["tile_height"],
+                tile_height=tilemap_data["tile_height"],
                 rows=tilemap_data["rows"],
                 columns=tilemap_data["columns"],
                 tiles=tilemap_data["tiles"],

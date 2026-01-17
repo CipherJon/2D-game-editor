@@ -36,9 +36,13 @@ class Scene:
 
         Args:
             layer: The layer to remove.
+
+        Raises:
+            ValueError: If the layer is not in the scene.
         """
-        if layer in self.layers:
-            self.layers.remove(layer)
+        if layer not in self.layers:
+            raise ValueError("Layer not found in scene")
+        self.layers.remove(layer)
 
     def add_entity(self, entity):
         """
@@ -85,6 +89,30 @@ class Scene:
         self.layers.clear()
         self.entities.clear()
         self.tilemaps.clear()
+
+    def clear_layers(self):
+        """
+        Clear all layers from the scene.
+        """
+        self.layers.clear()
+
+    def get_layer_by_name(self, name: str):
+        """
+        Get a layer by its name.
+
+        Args:
+            name (str): The name of the layer to retrieve.
+
+        Returns:
+            Layer: The layer with the specified name.
+
+        Raises:
+            ValueError: If no layer with the specified name exists.
+        """
+        for layer in self.layers:
+            if layer.name == name:
+                return layer
+        raise ValueError(f"Layer with name '{name}' not found")
 
     def __str__(self):
         """

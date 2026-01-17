@@ -23,3 +23,9 @@ class Color(TypedDict):
     g: int
     b: int
     a: int
+
+
+class AppState(TypedDict):
+    project_path: Optional[str]
+    current_scene: Optional[str]
+    is_running: bool

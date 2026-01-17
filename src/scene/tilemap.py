@@ -1,17 +1,20 @@
-```python
 """
 Tilemap module for the 2D game editor.
 Handles tilemap data, rendering, and manipulation.
 """
 
-from typing import List, Dict, Tuple, Optional
+from typing import Dict, List, Optional, Tuple
+
 import pygame
-from .layer import Layer
+
 from ..assets.asset_manager import AssetManager
-from ..utils.math import Point
+from ..core.types import Point
+from .layer import Layer
+
 
 class Tile:
     """Represents a single tile in the tilemap."""
+
     def __init__(self, tile_id: int, position: Point, tileset: str = "default"):
         self.tile_id = tile_id
         self.position = position
@@ -20,19 +23,24 @@ class Tile:
     def __repr__(self):
         return f"Tile(id={self.tile_id}, pos={self.position}, tileset={self.tileset})"
 
+
 class Tilemap:
     """Manages a grid of tiles for a 2D game level."""
-    def __init__(self, width: int, height: int, tile_size: int = 32):
+
+    def __init__(
+        self, width: int, height: int, tile_width: int = 32, tile_height: int = 32
+    ):
         self.width = width
         self.height = height
-        self.tile_size = tile_size
+        self.tile_width = tile_width
+        self.tile_height = tile_height
         self.tiles: Dict[Tuple[int, int], Tile] = {}
         self.layers: List[Layer] = []
         self.tilesets: Dict[str, pygame.Surface] = {}
 
     def add_tile(self, x: int, y: int, tile_id: int, tileset: str = "default"):
         """Add or update a tile at the specified position."""
-        position = Point(x, y)
+        position = {"x": x, "y": y}
         self.tiles[(x, y)] = Tile(tile_id, position, tileset)
 
     def remove_tile(self, x: int, y: int):
@@ -42,6 +50,8 @@ class Tilemap:
 
     def get_tile(self, x: int, y: int) -> Optional[Tile]:
         """Get the tile at the specified position."""
+        if x < 0 or x >= self.width or y < 0 or y >= self.height:
+            raise IndexError("Tile coordinates out of bounds")
         return self.tiles.get((x, y))
 
     def clear(self):
@@ -59,8 +69,12 @@ class Tilemap:
             tileset = self.tilesets.get(tile.tileset)
             if tileset:
                 # Calculate source rectangle for the tile in the tileset
-                tile_x = (tile.tile_id % (tileset.get_width() // self.tile_size)) * self.tile_size
-                tile_y = (tile.tile_id // (tileset.get_width() // self.tile_size)) * self.tile_size
+                tile_x = (
+                    tile.tile_id % (tileset.get_width() // self.tile_size)
+                ) * self.tile_size
+                tile_y = (
+                    tile.tile_id // (tileset.get_width() // self.tile_size)
+                ) * self.tile_size
                 src_rect = pygame.Rect(tile_x, tile_y, self.tile_size, self.tile_size)
 
                 # Calculate destination rectangle with camera offset
@@ -77,19 +91,14 @@ class Tilemap:
             "height": self.height,
             "tile_size": self.tile_size,
             "tiles": [
-                {
-                    "x": x,
-                    "y": y,
-                    "tile_id": tile.tile_id,
-                    "tileset": tile.tileset
-                }
+                {"x": x, "y": y, "tile_id": tile.tile_id, "tileset": tile.tileset}
                 for (x, y), tile in self.tiles.items()
             ],
-            "layers": [layer.to_dict() for layer in self.layers]
+            "layers": [layer.to_dict() for layer in self.layers],
         }
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'Tilemap':
+    def from_dict(cls, data: Dict) -> "Tilemap":
         """Deserialize a tilemap from a dictionary."""
         tilemap = cls(data["width"], data["height"], data["tile_size"])
         for tile_data in data["tiles"]:
@@ -97,6 +106,6 @@ class Tilemap:
                 tile_data["x"],
                 tile_data["y"],
                 tile_data["tile_id"],
-                tile_data["tileset"]
+                tile_data["tileset"],
             )
         return tilemap
