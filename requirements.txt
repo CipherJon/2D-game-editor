@@ -1,0 +1,10 @@
+pygame
+pygame_gui
+numpy
+pillow
+toml
+```
+
+---
+
+Let me know if you'd like me to create the remaining files in the structure!

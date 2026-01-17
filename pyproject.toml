@@ -1,0 +1,790 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "2d-game-editor"
+version = "0.1.0"
+description = "A 2D game editor for creating and managing game scenes."
+authors = [{ name = "Your Name", email = "your.email@example.com" }]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pygame>=2.0",
+    "numpy>=1.20",
+    "Pillow>=8.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=6.0", "black>=21.0", "mypy>=0.900"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+```
+
+```path/to/2D-game-editor/requirements.txt#L1-10
+pygame>=2.0
+numpy>=1.20
+Pillow>=8.0
+pytest>=6.0
+black>=21.0
+mypy>=0.900
+```
+
+```path/to/2D-game-editor/.gitignore#L1-15
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+
+# User projects
+projects/
+
+# IDE-specific files
+.idea/
+.vscode/
+
+# Logs and databases
+*.log
+*.sqlite
+```
+
+```path/to/2D-game-editor/src/__init__.py#L1-5
+"""
+Initialization file for the src module.
+"""
+```
+
+```path/to/2D-game-editor/src/main.py#L1-20
+"""
+Entry point for the 2D game editor.
+"""
+import pygame
+from src.core.app import App
+
+def main():
+    """Initialize and run the editor."""
+    pygame.init()
+    app = App()
+    app.run()
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
+```
+
+```path/to/2D-game-editor/src/core/__init__.py#L1-5
+"""
+Initialization file for the core module.
+"""
+```
+
+```path/to/2D-game-editor/src/core/app.py#L1-50
+"""
+Main application class for the 2D game editor.
+"""
+import pygame
+from src.core.config import Config
+from src.core.events import EventBus
+from src.editor.editor_window import EditorWindow
+
+class App:
+    """Main application class."""
+
+    def __init__(self):
+        """Initialize the application."""
+        self.config = Config()
+        self.event_bus = EventBus()
+        self.editor_window = EditorWindow(self.config, self.event_bus)
+        self.running = False
+
+    def run(self):
+        """Run the main application loop."""
+        self.running = True
+        clock = pygame.time.Clock()
+
+        while self.running:
+            self._handle_events()
+            self._update()
+            self._render()
+            clock.tick(self.config.fps)
+
+    def _handle_events(self):
+        """Handle pygame events."""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            self.event_bus.post(event)
+
+    def _update(self):
+        """Update the application state."""
+        self.editor_window.update()
+
+    def _render(self):
+        """Render the application."""
+        self.editor_window.render()
+        pygame.display.flip()
+```
+
+```path/to/2D-game-editor/src/core/config.py#L1-30
+"""
+Global configuration and defaults for the editor.
+"""
+class Config:
+    """Global configuration class."""
+
+    def __init__(self):
+        """Initialize the configuration."""
+        self.window_title = "2D Game Editor"
+        self.window_width = 1280
+        self.window_height = 720
+        self.fps = 60
+        self.grid_size = 16
+        self.default_tile_size = 32
+```
+
+```path/to/2D-game-editor/src/core/events.py#L1-30
+"""
+Custom pygame events and event bus.
+"""
+import pygame
+
+class EventBus:
+    """Event bus for handling custom events."""
+
+    def __init__(self):
+        """Initialize the event bus."""
+        self.listeners = {}
+
+    def post(self, event):
+        """Post an event to the bus."""
+        if event.type in self.listeners:
+            for listener in self.listeners[event.type]:
+                listener(event)
+
+    def subscribe(self, event_type, listener):
+        """Subscribe a listener to an event type."""
+        if event_type not in self.listeners:
+            self.listeners[event_type] = []
+        self.listeners[event_type].append(listener)
+```
+
+```path/to/2D-game-editor/src/core/constants.py#L1-10
+"""
+Global constants for the editor.
+"""
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+```
+
+```path/to/2D-game-editor/src/core/types.py#L1-10
+"""
+Type aliases and custom types for the editor.
+"""
+from typing import TypedDict, List, Tuple
+
+class Point(TypedDict):
+    """A point in 2D space."""
+    x: int
+    y: int
+
+class Size(TypedDict):
+    """A size in 2D space."""
+    width: int
+    height: int
+```
+
+```path/to/2D-game-editor/src/editor/__init__.py#L1-5
+"""
+Initialization file for the editor module.
+"""
+```
+
+```path/to/2D-game-editor/src/editor/editor_window.py#L1-50
+"""
+Main editor window composition.
+"""
+import pygame
+from src.core.config import Config
+from src.core.events import EventBus
+
+class EditorWindow:
+    """Main editor window class."""
+
+    def __init__(self, config: Config, event_bus: EventBus):
+        """Initialize the editor window."""
+        self.config = config
+        self.event_bus = event_bus
+        self.screen = pygame.display.set_mode(
+            (self.config.window_width, self.config.window_height)
+        )
+        pygame.display.set_caption(self.config.window_title)
+
+    def update(self):
+        """Update the editor window."""
+        pass
+
+    def render(self):
+        """Render the editor window."""
+        self.screen.fill((30, 30, 30))  # Dark background
+```
+
+```path/to/2D-game-editor/src/editor/tool_manager.py#L1-30
+"""
+Tool switching logic for the editor.
+"""
+class ToolManager:
+    """Manages the active tool in the editor."""
+
+    def __init__(self):
+        """Initialize the tool manager."""
+        self.active_tool = None
+
+    def set_tool(self, tool):
+        """Set the active tool."""
+        self.active_tool = tool
+```
+
+```path/to/2D-game-editor/src/editor/history.py#L1-30
+"""
+Undo/redo system for the editor.
+"""
+class History:
+    """Manages undo and redo operations."""
+
+    def __init__(self):
+        """Initialize the history."""
+        self.undo_stack = []
+        self.redo_stack = []
+
+    def add_action(self, action):
+        """Add an action to the undo stack."""
+        self.undo_stack.append(action)
+        self.redo_stack.clear()
+```
+
+```path/to/2D-game-editor/src/editor/selection.py#L1-20
+"""
+Selection management for the editor.
+"""
+class Selection:
+    """Manages selected entities or tiles."""
+
+    def __init__(self):
+        """Initialize the selection."""
+        self.selected_items = []
+```
+
+```path/to/2D-game-editor/src/editor/panels/__init__.py#L1-5
+"""
+Initialization file for the panels module.
+"""
+```
+
+```path/to/2D-game-editor/src/editor/panels/hierarchy.py#L1-20
+"""
+Hierarchy panel for the editor.
+"""
+class HierarchyPanel:
+    """Displays the hierarchy of entities in the scene."""
+
+    def __init__(self):
+        """Initialize the hierarchy panel."""
+        pass
+```
+
+```path/to/2D-game-editor/src/editor/panels/inspector.py#L1-20
+"""
+Inspector panel for the editor.
+"""
+class InspectorPanel:
+    """Displays properties of selected entities."""
+
+    def __init__(self):
+        """Initialize the inspector panel."""
+        pass
+```
+
+```path/to/2D-game-editor/src/editor/panels/assets_browser.py#L1-20
+"""
+Assets browser panel for the editor.
+"""
+class AssetsBrowserPanel:
+    """Displays available assets for the project."""
+
+    def __init__(self):
+        """Initialize the assets browser panel."""
+        pass
+```
+
+```path/to/2D-game-editor/src/editor/panels/tile_palette.py#L1-20
+"""
+Tile palette panel for the editor.
+"""
+class TilePalettePanel:
+    """Displays available tiles for the tilemap."""
+
+    def __init__(self):
+        """Initialize the tile palette panel."""
+        pass
+```
+
+```path/to/2D-game-editor/src/editor/panels/layer_panel.py#L1-20
+"""
+Layer panel for the editor.
+"""
+class LayerPanel:
+    """Displays and manages layers in the scene."""
+
+    def __init__(self):
+        """Initialize the layer panel."""
+        pass
+```
+
+```path/to/2D-game-editor/src/editor/panels/toolbar.py#L1-20
+"""
+Toolbar panel for the editor.
+"""
+class ToolbarPanel:
+    """Displays tools for the editor."""
+
+    def __init__(self):
+        """Initialize the toolbar panel."""
+        pass
+```
+
+```path/to/2D-game-editor/src/scene/__init__.py#L1-5
+"""
+Initialization file for the scene module.
+"""
+```
+
+```path/to/2D-game-editor/src/scene/scene.py#L1-30
+"""
+Main scene container for the editor.
+"""
+class Scene:
+    """Represents a game scene."""
+
+    def __init__(self):
+        """Initialize the scene."""
+        self.layers = []
+        self.entities = []
+```
+
+```path/to/2D-game-editor/src/scene/layer.py#L1-20
+"""
+Layer class for the editor.
+"""
+class Layer:
+    """Represents a layer in the scene."""
+
+    def __init__(self, name):
+        """Initialize the layer."""
+        self.name = name
+        self.visible = True
+```
+
+```path/to/2D-game-editor/src/scene/entity.py#L1-20
+"""
+Entity class for the editor.
+"""
+class Entity:
+    """Represents an entity in the scene."""
+
+    def __init__(self, x, y):
+        """Initialize the entity."""
+        self.x = x
+        self.y = y
+```
+
+```path/to/2D-game-editor/src/scene/tilemap.py#L1-20
+"""
+Tilemap class for the editor.
+"""
+class Tilemap:
+    """Represents a tilemap in the scene."""
+
+    def __init__(self):
+        """Initialize the tilemap."""
+        self.tiles = []
+```
+
+```path/to/2D-game-editor/src/scene/scene_serializer.py#L1-20
+"""
+Scene serialization logic for the editor.
+"""
+class SceneSerializer:
+    """Handles saving and loading scenes."""
+
+    def __init__(self):
+        """Initialize the serializer."""
+        pass
+```
+
+```path/to/2D-game-editor/src/rendering/__init__.py#L1-5
+"""
+Initialization file for the rendering module.
+"""
+```
+
+```path/to/2D-game-editor/src/rendering/camera.py#L1-30
+"""
+Camera class for the editor.
+"""
+class Camera:
+    """Manages the view of the scene."""
+
+    def __init__(self):
+        """Initialize the camera."""
+        self.x = 0
+        self.y = 0
+        self.zoom = 1.0
+```
+
+```path/to/2D-game-editor/src/rendering/renderer.py#L1-20
+"""
+High-level drawing helper for the editor.
+"""
+class Renderer:
+    """Handles rendering of the scene."""
+
+    def __init__(self):
+        """Initialize the renderer."""
+        pass
+```
+
+```path/to/2D-game-editor/src/rendering/grid_renderer.py#L1-20
+"""
+Grid rendering logic for the editor.
+"""
+class GridRenderer:
+    """Handles rendering of the grid."""
+
+    def __init__(self):
+        """Initialize the grid renderer."""
+        pass
+```
+
+```path/to/2D-game-editor/src/rendering/gizmos.py#L1-20
+"""
+Gizmo rendering logic for the editor.
+"""
+class Gizmos:
+    """Handles rendering of gizmos."""
+
+    def __init__(self):
+        """Initialize the gizmos."""
+        pass
+```
+
+```path/to/2D-game-editor/src/tools/__init__.py#L1-5
+"""
+Initialization file for the tools module.
+"""
+```
+
+```path/to/2D-game-editor/src/tools/base_tool.py#L1-20
+"""
+Base tool class for the editor.
+"""
+class BaseTool:
+    """Base class for all tools."""
+
+    def __init__(self):
+        """Initialize the tool."""
+        pass
+```
+
+```path/to/2D-game-editor/src/tools/brush_tool.py#L1-20
+"""
+Brush tool for the editor.
+"""
+class BrushTool(BaseTool):
+    """Brush tool for painting tiles."""
+
+    def __init__(self):
+        """Initialize the brush tool."""
+        super().__init__()
+```
+
+```path/to/2D-game-editor/src/tools/eraser_tool.py#L1-20
+"""
+Eraser tool for the editor.
+"""
+class EraserTool(BaseTool):
+    """Eraser tool for removing tiles."""
+
+    def __init__(self):
+        """Initialize the eraser tool."""
+        super().__init__()
+```
+
+```path/to/2D-game-editor/src/tools/select_tool.py#L1-20
+"""
+Select tool for the editor.
+"""
+class SelectTool(BaseTool):
+    """Select tool for selecting entities."""
+
+    def __init__(self):
+        """Initialize the select tool."""
+        super().__init__()
+```
+
+```path/to/2D-game-editor/src/tools/move_tool.py#L1-20
+"""
+Move tool for the editor.
+"""
+class MoveTool(BaseTool):
+    """Move tool for moving entities."""
+
+    def __init__(self):
+        """Initialize the move tool."""
+        super().__init__()
+```
+
+```path/to/2D-game-editor/src/tools/fill_tool.py#L1-20
+"""
+Fill tool for the editor.
+"""
+class FillTool(BaseTool):
+    """Fill tool for filling areas."""
+
+    def __init__(self):
+        """Initialize the fill tool."""
+        super().__init__()
+```
+
+```path/to/2D-game-editor/src/tools/entity_placer.py#L1-20
+"""
+Entity placer tool for the editor.
+"""
+class EntityPlacerTool(BaseTool):
+    """Entity placer tool for placing entities."""
+
+    def __init__(self):
+        """Initialize the entity placer tool."""
+        super().__init__()
+```
+
+```path/to/2D-game-editor/src/assets/__init__.py#L1-5
+"""
+Initialization file for the assets module.
+"""
+```
+
+```path/to/2D-game-editor/src/assets/asset_manager.py#L1-20
+"""
+Asset manager for the editor.
+"""
+class AssetManager:
+    """Manages assets for the project."""
+
+    def __init__(self):
+        """Initialize the asset manager."""
+        pass
+```
+
+```path/to/2D-game-editor/src/assets/sprite_loader.py#L1-20
+"""
+Sprite loader for the editor.
+"""
+class SpriteLoader:
+    """Handles loading sprites."""
+
+    def __init__(self):
+        """Initialize the sprite loader."""
+        pass
+```
+
+```path/to/2D-game-editor/src/assets/thumbnail_cache.py#L1-20
+"""
+Thumbnail cache for the editor.
+"""
+class ThumbnailCache:
+    """Manages thumbnails for assets."""
+
+    def __init__(self):
+        """Initialize the thumbnail cache."""
+        pass
+```
+
+```path/to/2D-game-editor/src/ui/__init__.py#L1-5
+"""
+Initialization file for the UI module.
+"""
+```
+
+```path/to/2D-game-editor/src/ui/widgets.py#L1-20
+"""
+Custom widgets for the editor.
+"""
+class Widgets:
+    """Custom UI widgets."""
+
+    def __init__(self):
+        """Initialize the widgets."""
+        pass
+```
+
+```path/to/2D-game-editor/src/ui/imgui_utils.py#L1-20
+"""
+ImGui utilities for the editor.
+"""
+class ImGuiUtils:
+    """ImGui utilities."""
+
+    def __init__(self):
+        """Initialize the ImGui utilities."""
+        pass
+```
+
+```path/to/2D-game-editor/src/ui/theme.py#L1-20
+"""
+Theme management for the editor.
+"""
+class Theme:
+    """Manages the UI theme."""
+
+    def __init__(self):
+        """Initialize the theme."""
+        pass
+```
+
+```path/to/2D-game-editor/src/utils/__init__.py#L1-5
+"""
+Initialization file for the utils module.
+"""
+```
+
+```path/to/2D-game-editor/src/utils/math.py#L1-20
+"""
+Math utilities for the editor.
+"""
+class MathUtils:
+    """Math utilities."""
+
+    def __init__(self):
+        """Initialize the math utilities."""
+        pass
+```
+
+```path/to/2D-game-editor/src/utils/file_dialog.py#L1-20
+"""
+File dialog utilities for the editor.
+"""
+class FileDialog:
+    """File dialog utilities."""
+
+    def __init__(self):
+        """Initialize the file dialog."""
+        pass
+```
+
+```path/to/2D-game-editor/src/utils/color.py#L1-20
+"""
+Color utilities for the editor.
+"""
+class ColorUtils:
+    """Color utilities."""
+
+    def __init__(self):
+        """Initialize the color utilities."""
+        pass
+```
+
+```path/to/2D-game-editor/src/utils/rect.py#L1-20
+"""
+Rectangle utilities for the editor.
+"""
+class RectUtils:
+    """Rectangle utilities."""
+
+    def __init__(self):
+        """Initialize the rectangle utilities."""
+        pass
+```
+
+```path/to/2D-game-editor/src/utils/logging.py#L1-20
+"""
+Logging utilities for the editor.
+"""
+class LoggingUtils:
+    """Logging utilities."""
+
+    def __init__(self):
+        """Initialize the logging utilities."""
+        pass
+```
+
+```path/to/2D-game-editor/tests/test_scene.py#L1-10
+"""
+Test cases for the scene module.
+"""
+def test_scene_initialization():
+    """Test scene initialization."""
+    pass
+```
+
+```path/to/2D-game-editor/tests/test_history.py#L1-10
+"""
+Test cases for the history module.
+"""
+def test_history_initialization():
+    """Test history initialization."""
+    pass
+```
+
+```path/to/2D-game-editor/tests/test_serializer.py#L1-10
+"""
+Test cases for the serializer module.
+"""
+def test_serializer_initialization():
+    """Test serializer initialization."""
+    pass
+```
+
+```path/to/2D-game-editor/docs/architecture.md#L1-20
+# Architecture Overview
+
+This document provides an overview of the architecture of the 2D game editor.
+
+## Core Modules
+
+- **Core**: Fundamental systems and base classes.
+- **Editor**: Editor logic and UI panels.
+- **Scene**: Scene data and management.
+- **Rendering**: Drawing and camera-related logic.
+- **Tools**: Individual editor tools.
+- **Assets**: Asset management and preview.
+- **UI**: Reusable UI components.
+- **Utils**: General-purpose utilities.
+```
+
+```path/to/2D-game-editor/projects/.gitignore#L1-5
+# Ignore all files in the projects directory
+*
+```
+
+```path/to/2D-game-editor/run_editor.sh#L1-10
+#!/bin/bash
+# Script to run the 2D game editor
+python -m src.main
+```
+
+```path/to/2D-game-editor/run_editor.bat#L1-5
+@echo off
+python -m src.main
+pause
+```
+
+The file structure and content have been created successfully. You now have a complete setup for your 2D game editor project.

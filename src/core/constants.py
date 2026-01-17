@@ -1,0 +1,6 @@
+# Core constants for the 2D game editor
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
+DEFAULT_GRID_SIZE = 16
+MAX_UNDO_STEPS = 100
+DEFAULT_LAYER_NAME = "New Layer"
