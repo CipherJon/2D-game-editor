@@ -1,95 +1,133 @@
 # 2D Game Editor
 
-A lightweight and extensible 2D game editor for creating and managing game scenes, tilemaps, and entities.
+A modular and extensible 2D game editor built with Python and Pygame.
 
 ## Features
 
-- **Scene Management**: Create, edit, and organize game scenes with layers.
-- **Tilemap Editor**: Design levels using tilemaps with support for multiple tilesets.
-- **Entity System**: Place and manage game entities with customizable properties.
-- **Asset Management**: Import and organize sprites, textures, and other assets.
-- **Undo/Redo Support**: Full history tracking for all editor actions.
-- **Customizable Tools**: Brush, eraser, fill, and selection tools for level design.
-- **Grid and Gizmos**: Visual aids for precise placement and alignment.
+- **Modular Architecture**: The editor is divided into several key components, each responsible for a specific aspect of the editor's functionality.
+- **Scene Management**: Create, edit, and manage game scenes with layers, entities, and tilemaps.
+- **Asset Management**: Load, manage, and preview assets such as sprites, textures, and other resources.
+- **Tool System**: Use a variety of tools for manipulating the scene, including brush, eraser, select, move, fill, and entity placer tools.
+- **Rendering**: High-level rendering helpers for drawing scenes, layers, and other visual elements.
+- **Undo/Redo System**: Full support for undoing and redoing actions.
+- **Customizable UI**: Reusable UI components and widgets for the editor.
 
 ## Installation
 
 ### Prerequisites
 
 - Python 3.8 or higher
-- Pygame 2.0 or higher
-- NumPy 1.20 or higher
-- Pillow 8.0 or higher
+- Pygame
+- Pillow (for image processing)
 
-### Steps
+### Setup
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/2d-game-editor.git
-   cd 2d-game-editor
+   git clone https://github.com/yourusername/2D-game-editor.git
+   cd 2D-game-editor
    ```
 
-2. Install the required dependencies:
+2. Create a virtual environment (optional but recommended):
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+   ```
+
+3. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. Run the editor:
+4. Run the editor:
    ```bash
    python -m src.main
    ```
 
-## Project Structure
-
-```
-2D-game-editor/
-├── src/
-│   ├── core/               # Core application logic
-│   ├── editor/             # Editor-specific functionality
-│   ├── rendering/          # Rendering and visualization
-│   ├── scene/              # Scene and layer management
-│   ├── tools/              # Editor tools (brush, eraser, etc.)
-│   ├── assets/             # Asset management
-│   ├── ui/                # User interface components
-│   └── utils/              # Utility functions and helpers
-├── resources/             # Game assets and resources
-├── projects/              # Example projects
-├── tests/                 # Unit tests
-├── README.md              # Project documentation
-├── requirements.txt       # Python dependencies
-└── pyproject.toml         # Build configuration
-```
-
 ## Usage
 
-1. **Create a New Scene**: Start by creating a new scene and setting its dimensions.
-2. **Add Layers**: Organize your scene using layers for better management.
-3. **Place Tiles**: Use the tilemap editor to design your levels.
-4. **Add Entities**: Place game entities and customize their properties.
-5. **Save Your Work**: Save your scene to a file for later editing.
+### Basic Usage
+
+1. **Create a New Scene**:
+   - Click on the "File" menu and select "New Scene".
+   - Enter a name for the scene and click "OK".
+
+2. **Add Layers**:
+   - Click on the "Layer" menu and select "Add Layer".
+   - Enter a name for the layer and click "OK".
+
+3. **Add Entities**:
+   - Select the "Entity Placer" tool from the toolbar.
+   - Click on the scene to place an entity.
+
+4. **Save the Scene**:
+   - Click on the "File" menu and select "Save Scene".
+   - Enter a name for the scene file and click "Save".
+
+### Advanced Usage
+
+1. **Customize the UI**:
+   - Modify the `theme.py` file to change the editor's color scheme and styles.
+   - Add custom widgets to the `widgets.py` file.
+
+2. **Add New Tools**:
+   - Create a new tool class that inherits from `BaseTool`.
+   - Implement the required methods (`on_activate`, `on_deactivate`, `handle_event`, `update`, `draw`).
+   - Register the tool with the `ToolManager`.
+
+3. **Extend the Scene System**:
+   - Add new entity types by creating classes that inherit from `Entity`.
+   - Add new layer types by creating classes that inherit from `Layer`.
+
+## Architecture
+
+The editor is divided into several key components:
+
+- **Core Module**: Contains the fundamental systems and base classes that form the backbone of the editor.
+- **Editor Module**: Contains the logic and UI components for the editor itself.
+- **Scene Module**: Manages the data and serialization of game scenes.
+- **Rendering Module**: Handles all drawing and camera-related functionality.
+- **Tools Module**: Contains individual editor tools for manipulating the scene.
+- **Assets Module**: Manages asset loading, previewing, and caching.
+- **UI Module**: Contains reusable UI components and utilities.
+- **Utils Module**: Provides general-purpose helpers and utilities.
+
+For more details, see the [Architecture Documentation](docs/architecture.md).
+
+## Testing
+
+To run the tests, use the following command:
+
+```bash
+python -m pytest tests/
+```
 
 ## Contributing
 
-Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them.
+4. Push your changes to your fork.
+5. Submit a pull request.
 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-```
 
-Now, let's update the `requirements.txt` file to ensure all dependencies are listed correctly.
+## Roadmap
 
-<file_path>
-2D-game-editor/requirements.txt
-</file_path>
+- **Short-term Goals**:
+  - Improve error handling and logging.
+  - Add more comprehensive tests.
+  - Enhance the UI with more customizable widgets.
 
-<edit_description>
-Update requirements.txt with all dependencies
-</edit_description>
-```
+- **Long-term Goals**:
+  - Add support for animations and particle effects.
+  - Implement a plugin system for extending the editor.
+  - Add support for exporting scenes to popular game engines.
 
-pygame>=2.0
-pygame_gui>=0.6
-numpy>=1.20
-Pillow>=8.0
-toml>=0.10
+## Contact
+
+For questions or feedback, please contact the project maintainer at [your.email@example.com](mailto:your.email@example.com).

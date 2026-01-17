@@ -1,4 +1,3 @@
-# thumbnail_cache.py
 """
 Thumbnail cache management for assets.
 Handles generating, storing, and retrieving thumbnails for sprites and tiles.
@@ -6,7 +5,7 @@ Handles generating, storing, and retrieving thumbnails for sprites and tiles.
 
 import hashlib
 import os
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple
 
 import pygame
 from PIL import Image, ImageOps
@@ -24,6 +23,9 @@ class ThumbnailCache:
 
         Args:
             cache_dir: Directory where thumbnails will be stored.
+
+        Raises:
+            PermissionError: If the cache directory cannot be created due to permission issues.
         """
         self.cache_dir = cache_dir
         self.thumbnail_size = (64, 64)  # Default thumbnail size
@@ -31,8 +33,17 @@ class ThumbnailCache:
         self._ensure_cache_dir_exists()
 
     def _ensure_cache_dir_exists(self) -> None:
-        """Ensure the cache directory exists."""
-        os.makedirs(self.cache_dir, exist_ok=True)
+        """Ensure the cache directory exists.
+
+        Raises:
+            PermissionError: If the cache directory cannot be created due to permission issues.
+        """
+        try:
+            os.makedirs(self.cache_dir, exist_ok=True)
+        except PermissionError as e:
+            raise PermissionError(
+                f"Permission denied while creating cache directory: {e}"
+            )
 
     def _generate_thumbnail_path(self, asset_path: str) -> str:
         """
@@ -58,6 +69,9 @@ class ThumbnailCache:
 
         Returns:
             Pygame Surface containing the thumbnail, or None if not found.
+
+        Raises:
+            pygame.error: If the thumbnail file is corrupted or cannot be loaded.
         """
         thumbnail_path = self._generate_thumbnail_path(asset_path)
 
@@ -66,9 +80,8 @@ class ThumbnailCache:
             try:
                 thumbnail = pygame.image.load(thumbnail_path)
                 return thumbnail
-            except pygame.error:
-                print(f"Error loading thumbnail: {thumbnail_path}")
-                return None
+            except pygame.error as e:
+                raise pygame.error(f"Error loading thumbnail: {e}")
 
         return None
 
@@ -81,6 +94,11 @@ class ThumbnailCache:
 
         Returns:
             Pygame Surface containing the generated thumbnail, or None if generation failed.
+
+        Raises:
+            FileNotFoundError: If the asset file does not exist.
+            PermissionError: If the asset file cannot be read due to permission issues.
+            Exception: For other errors during thumbnail generation.
         """
         try:
             # Load the original image
@@ -99,28 +117,44 @@ class ThumbnailCache:
             pygame_thumbnail = pygame.image.load(thumbnail_path)
             return pygame_thumbnail
 
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f"Asset file not found: {e}")
+        except PermissionError as e:
+            raise PermissionError(f"Permission denied while reading asset file: {e}")
         except Exception as e:
-            print(f"Error generating thumbnail for {asset_path}: {e}")
-            return None
+            raise Exception(f"Error generating thumbnail: {e}")
 
     def clear_cache(self) -> None:
-        """Clear all cached thumbnails."""
+        """Clear all cached thumbnails.
+
+        Raises:
+            PermissionError: If a thumbnail file cannot be deleted due to permission issues.
+        """
         for filename in os.listdir(self.cache_dir):
             file_path = os.path.join(self.cache_dir, filename)
             try:
                 if os.path.isfile(file_path):
                     os.unlink(file_path)
+            except PermissionError as e:
+                raise PermissionError(
+                    f"Permission denied while deleting thumbnail: {e}"
+                )
             except Exception as e:
                 print(f"Error deleting {file_path}: {e}")
 
         self.cache.clear()
         print("Thumbnail cache cleared.")
 
-    def set_thumbnail_size(self, size: tuple[int, int]) -> None:
+    def set_thumbnail_size(self, size: Tuple[int, int]) -> None:
         """
         Set the size for generated thumbnails.
 
         Args:
             size: Tuple of (width, height) for thumbnails.
+
+        Raises:
+            ValueError: If the size is invalid (e.g., negative dimensions).
         """
+        if size[0] <= 0 or size[1] <= 0:
+            raise ValueError("Thumbnail size must have positive dimensions.")
         self.thumbnail_size = size

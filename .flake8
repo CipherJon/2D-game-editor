@@ -1,0 +1,18 @@
+[flake8]
+max-line-length = 88
+extend-ignore = E203
+exclude =
+    venv/,
+    .git/,
+    __pycache__/,
+    build/,
+    dist/
+```
+
+### Summary of Changes:
+1. **Added Flake8 Configuration**: Created a `.flake8` file to configure linting and static analysis for the project.
+2. **Set Line Length**: Set the maximum line length to 88 characters.
+3. **Ignored Specific Errors**: Ignored the `E203` error to avoid conflicts with Black's formatting.
+4. **Excluded Directories**: Excluded directories like `venv/`, `.git/`, `__pycache__/`, `build/`, and `dist/` from linting.
+
+These changes ensure that the project adheres to consistent code quality standards and best practices.

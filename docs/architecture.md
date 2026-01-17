@@ -74,11 +74,11 @@ The `ui` module contains reusable UI components and utilities.
 ### 8. Utils Module (`src/utils`)
 The `utils` module provides general-purpose helpers and utilities.
 
-- **`math.py`**: Mathematical utilities for the editor.
+- **`math.py`**: Mathematical utilities for the editor, including clamping, interpolation, and snapping to grids.
 - **`file_dialog.py`**: Handles file dialogs for opening and saving files.
-- **`color.py`**: Utilities for color manipulation.
-- **`rect.py`**: Utilities for rectangle operations.
-- **`logging.py`**: Logging utilities for debugging and monitoring.
+- **`color.py`**: Utilities for color manipulation, such as converting between hex and RGB formats.
+- **`rect.py`**: Utilities for rectangle operations, such as checking for intersections and containment.
+- **`logging.py`**: Logging utilities for debugging and monitoring, with support for both console and file logging.
 
 ## Data Flow
 
@@ -104,3 +104,82 @@ The architecture is designed to be modular, allowing for easy extension and cust
 ## Conclusion
 
 This architecture provides a solid foundation for a 2D game editor, with clear separation of concerns and modular design. Each component is responsible for a specific aspect of the editor, making it easier to maintain and extend.
+
+## Diagrams
+
+### Component Diagram
+```
++----------------+       +----------------+       +----------------+
+|    Core        |       |    Editor      |       |    Scene       |
+|  - app.py      |       |  - editor_window.py |  |  - scene.py    |
+|  - config.py   |       |  - tool_manager.py  |  |  - layer.py    |
+|  - events.py   |       |  - history.py       |  |  - entity.py   |
+|  - constants.py|       |  - selection.py     |  |  - tilemap.py  |
+|  - types.py    |       |  - panels/          |  |  - scene_serializer.py |
++----------------+       +----------------+       +----------------+
+        |                         |                         |
+        v                         v                         v
++----------------+       +----------------+       +----------------+
+|    Rendering   |       |    Tools       |       |    Assets      |
+|  - camera.py   |       |  - base_tool.py    |  |  - asset_manager.py |
+|  - renderer.py |       |  - brush_tool.py   |  |  - sprite_loader.py |
+|  - grid_renderer.py |  |  - eraser_tool.py  |  |  - thumbnail_cache.py |
+|  - gizmos.py    |       |  - select_tool.py  |  +----------------+
++----------------+       |  - move_tool.py    |
+        |               |  - fill_tool.py    |
+        v               |  - entity_placer.py|
++----------------+       +----------------+
+|    UI          |               |
+|  - widgets.py  |               |
+|  - imgui_utils.py |            |
+|  - theme.py    |               |
++----------------+               |
+        |                       |
+        v                       v
++----------------+       +----------------+
+|    Utils       |       |    Main        |
+|  - math.py     |       |  - main.py     |
+|  - file_dialog.py |    +----------------+
+|  - color.py    |
+|  - rect.py     |
+|  - logging.py  |
++----------------+
+```
+
+### Data Flow Diagram
+```
++----------------+       +----------------+       +----------------+
+|    User        |       |    Editor      |       |    Scene       |
+|  - Input       | ----> |  - tool_manager| ----> |  - scene.py    |
+|  - Commands    |       |  - history.py  |       |  - layer.py    |
++----------------+       +----------------+       |  - entity.py   |
+        |                         |               |  - tilemap.py  |
+        |                         |               +----------------+
+        |                         |                       |
+        v                         v                       v
++----------------+       +----------------+       +----------------+
+|    Rendering   |       |    Tools       |       |    Assets      |
+|  - camera.py   |       |  - base_tool.py    |  |  - asset_manager.py |
+|  - renderer.py |       |  - brush_tool.py   |  |  - sprite_loader.py |
+|  - grid_renderer.py |  |  - eraser_tool.py  |  |  - thumbnail_cache.py |
+|  - gizmos.py    |       |  - select_tool.py  |  +----------------+
++----------------+       |  - move_tool.py    |
+        |               |  - fill_tool.py    |
+        v               |  - entity_placer.py|
++----------------+       +----------------+
+|    UI          |               |
+|  - widgets.py  |               |
+|  - imgui_utils.py |            |
+|  - theme.py    |               |
++----------------+               |
+        |                       |
+        v                       v
++----------------+       +----------------+
+|    Utils       |       |    Main        |
+|  - math.py     |       |  - main.py     |
+|  - file_dialog.py |    +----------------+
+|  - color.py    |
+|  - rect.py     |
+|  - logging.py  |
++----------------+
+```

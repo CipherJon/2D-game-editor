@@ -15,6 +15,14 @@ def setup_logging(
 
     Returns:
         Configured logger instance.
+
+    Raises:
+        PermissionError: If the log file cannot be written due to permission issues.
+        OSError: If the log file path is invalid or the file cannot be created.
+
+    Examples:
+        >>> logger = setup_logging()
+        >>> logger = setup_logging(log_file="app.log", level=logging.DEBUG)
     """
     logger = logging.getLogger("2DGameEditor")
     logger.setLevel(level)
@@ -34,8 +42,15 @@ def setup_logging(
 
     # Add file handler if log_file is provided
     if log_file:
-        file_handler = logging.FileHandler(log_file)
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
+        try:
+            file_handler = logging.FileHandler(log_file)
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
+        except PermissionError as e:
+            logger.error(f"Permission denied while setting up log file: {e}")
+            raise
+        except OSError as e:
+            logger.error(f"Error setting up log file: {e}")
+            raise
 
     return logger
