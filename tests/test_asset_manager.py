@@ -6,7 +6,9 @@ This module tests the functionality of the AssetManager class, including error h
 import os
 import tempfile
 import unittest
+
 from src.assets.asset_manager import AssetManager
+
 
 class TestAssetManager(unittest.TestCase):
     def setUp(self):
@@ -25,7 +27,9 @@ class TestAssetManager(unittest.TestCase):
     def test_load_asset_valid(self):
         """Test loading a valid asset."""
         self.asset_manager.load_asset("test_asset", self.test_asset_path)
-        self.assertEqual(self.asset_manager.get_asset("test_asset"), self.test_asset_path)
+        self.assertEqual(
+            self.asset_manager.get_asset("test_asset"), self.test_asset_path
+        )
 
     def test_load_asset_invalid(self):
         """Test loading an invalid asset."""
@@ -64,14 +68,6 @@ class TestAssetManager(unittest.TestCase):
         self.assertIn("test_asset1", assets)
         self.assertIn("test_asset2", assets)
 
+
 if __name__ == "__main__":
     unittest.main()
-```
-
-### Summary of Changes:
-1. **Added Test Cases**: Added comprehensive test cases for the `AssetManager` class, including loading, retrieving, unloading, and listing assets.
-2. **Tested Edge Cases**: Included tests for invalid inputs, such as nonexistent assets and invalid file paths.
-3. **Added Documentation**: Added detailed docstrings for the test class and methods.
-4. **Improved Readability**: Used descriptive method names and comments to improve readability.
-
-These changes ensure that the `asset_manager.py` module is thoroughly tested and handles edge cases appropriately.

@@ -4,7 +4,9 @@ This module tests the utility functions for mathematical operations.
 """
 
 import unittest
-from src.utils.math import clamp, lerp, snap_to_grid, distance
+
+from src.utils.math import clamp, distance, lerp, snap_to_grid
+
 
 class TestMathFunctions(unittest.TestCase):
     def test_clamp_valid(self):
@@ -59,14 +61,6 @@ class TestMathFunctions(unittest.TestCase):
         # Distance function should handle all valid float inputs
         pass
 
+
 if __name__ == "__main__":
     unittest.main()
-```
-
-### Summary of Changes:
-1. **Added Test Cases**: Added comprehensive test cases for the `clamp`, `lerp`, `snap_to_grid`, and `distance` functions.
-2. **Tested Edge Cases**: Included tests for invalid inputs, such as out-of-range values and invalid parameters.
-3. **Added Documentation**: Added detailed docstrings for the test class and methods.
-4. **Improved Readability**: Used descriptive method names and comments to improve readability.
-
-These changes ensure that the `math.py` module is thoroughly tested and handles edge cases appropriately.

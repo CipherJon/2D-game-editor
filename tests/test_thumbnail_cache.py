@@ -25,12 +25,9 @@ class TestThumbnailCache(unittest.TestCase):
 
     def tearDown(self):
         # Clean up temporary files
-        for root, dirs, files in os.walk(self.temp_dir):
-            for file in files:
-                os.remove(os.path.join(root, file))
-            for dir in dirs:
-                os.rmdir(os.path.join(root, dir))
-        os.rmdir(self.temp_dir)
+        import shutil
+
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_generate_and_cache_thumbnail_valid(self):
         """Test generating and caching a valid thumbnail."""

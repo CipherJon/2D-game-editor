@@ -106,7 +106,7 @@ class ThumbnailCache:
 
             # Create thumbnail
             thumbnail = ImageOps.fit(
-                original_image, self.thumbnail_size, method=Image.Resampling.LANCZOS
+                original_image, self.thumbnail_size, method=Image.LANCZOS
             )
 
             # Save thumbnail to cache

@@ -6,11 +6,13 @@ This module tests the functionality of the SceneSerializer class, including erro
 import os
 import tempfile
 import unittest
-from src.scene.scene import Scene
-from src.scene.layer import Layer
+
 from src.scene.entity import Entity
-from src.scene.tilemap import Tilemap
+from src.scene.layer import Layer
+from src.scene.scene import Scene
 from src.scene.scene_serializer import SceneSerializer
+from src.scene.tilemap import Tilemap
+
 
 class TestSceneSerializer(unittest.TestCase):
     def setUp(self):
@@ -20,9 +22,9 @@ class TestSceneSerializer(unittest.TestCase):
 
     def tearDown(self):
         # Clean up temporary files
-        for file in os.listdir(self.temp_dir):
-            os.remove(os.path.join(self.temp_dir, file))
-        os.rmdir(self.temp_dir)
+        import shutil
+
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_serialize_valid_scene(self):
         """Test serializing a valid scene."""
@@ -68,7 +70,9 @@ class TestSceneSerializer(unittest.TestCase):
 
     def test_save_to_file_invalid(self):
         """Test saving a scene to an invalid file path."""
-        invalid_file_path = os.path.join(self.temp_dir, "invalid_dir", "test_scene.json")
+        invalid_file_path = os.path.join(
+            self.temp_dir, "invalid_dir", "test_scene.json"
+        )
         with self.assertRaises(FileNotFoundError):
             self.serializer.save_to_file(self.scene, invalid_file_path)
 
@@ -85,14 +89,6 @@ class TestSceneSerializer(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             self.serializer.load_from_file(invalid_file_path)
 
+
 if __name__ == "__main__":
     unittest.main()
-```
-
-### Summary of Changes:
-1. **Added Test Cases**: Added comprehensive test cases for the `SceneSerializer` class, including serializing, deserializing, saving, and loading scenes.
-2. **Tested Edge Cases**: Included tests for invalid inputs, such as invalid scene objects and file paths.
-3. **Added Documentation**: Added detailed docstrings for the test class and methods.
-4. **Improved Readability**: Used descriptive method names and comments to improve readability.
-
-These changes ensure that the `scene_serializer.py` module is thoroughly tested and handles edge cases appropriately.
