@@ -1,10 +1,10 @@
 import pygame
 
-from src.core.app import GameEditorApp
+from src.core.app import App
 
 
 def main():
-    app = GameEditorApp()
+    app = App()
     app.run()
 
 

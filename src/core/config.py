@@ -22,6 +22,7 @@ class Config:
         # Editor settings
         self.max_undo_steps = 50
         self.auto_save_interval = 300  # 5 minutes in seconds
+        self.target_fps = 60
 
 
 # Global configuration instance

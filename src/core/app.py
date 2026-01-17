@@ -8,7 +8,7 @@ from typing import Optional
 import pygame
 
 from .config import Config
-from .events import EventBus
+from .events import Event, EventBus
 from .types import AppState
 
 
@@ -57,6 +57,8 @@ class App:
 
     def run(self):
         """Main application loop."""
+        if not self.initialize():
+            return
         while self.state["is_running"]:
             self._handle_events()
             self._update()
@@ -68,7 +70,10 @@ class App:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.state["is_running"] = False
-            self.event_bus.post(event)
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.state["is_running"] = False
+            self.event_bus.publish(Event(event.type, event))
 
     def _update(self):
         """Update the application state."""

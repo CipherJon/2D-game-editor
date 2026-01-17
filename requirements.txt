@@ -1,9 +1,2 @@
 pygame>=2.0
 Pillow>=8.0
-```
-
-### Summary of Changes:
-1. **Updated Dependencies**: Listed all required dependencies for the project, including `pygame` and `Pillow`.
-2. **Removed Unnecessary Dependencies**: Removed dependencies that are not used in the project, such as `pygame_gui`, `numpy`, and `toml`.
-
-These changes ensure that the project's dependencies are accurately listed and up-to-date.
