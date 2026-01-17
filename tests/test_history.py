@@ -1,7 +1,7 @@
 # test_history.py
 import unittest
 
-from src.editor.history import History
+from editor.history import History
 
 
 class TestHistory(unittest.TestCase):

@@ -1,8 +1,8 @@
 import unittest
 
-from src.scene.layer import Layer
-from src.scene.scene import Scene
-from src.scene.tilemap import Tilemap
+from scene.layer import Layer
+from scene.scene import Scene
+from scene.tilemap import Tilemap
 
 
 class TestScene(unittest.TestCase):

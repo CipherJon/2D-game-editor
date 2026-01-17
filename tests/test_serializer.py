@@ -3,9 +3,9 @@ import os
 import tempfile
 import unittest
 
-from src.scene.layer import Layer
-from src.scene.scene import Scene
-from src.scene.scene_serializer import SceneSerializer
+from scene.layer import Layer
+from scene.scene import Scene
+from scene.scene_serializer import SceneSerializer
 
 
 class TestSceneSerializer(unittest.TestCase):

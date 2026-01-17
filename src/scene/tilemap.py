@@ -7,8 +7,9 @@ from typing import Dict, List, Optional, Tuple
 
 import pygame
 
-from ..assets.asset_manager import AssetManager
-from ..core.types import Point
+from assets.asset_manager import AssetManager
+from core.types import Point
+
 from .layer import Layer
 
 
