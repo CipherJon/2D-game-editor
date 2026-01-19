@@ -7,7 +7,7 @@ This module handles the main window layout, panels, and user interactions.
 import pygame
 from pygame.locals import *
 
-from ..core.events import EventBus
+from ..core.events import Event, EventBus
 from ..rendering.camera import Camera
 from ..scene.scene import Scene
 from ..ui.widgets import Button
@@ -87,7 +87,7 @@ class EditorWindow:
         if event.key == K_ESCAPE:
             self.is_running = False
         elif event.key == K_s and event.mod & KMOD_CTRL:
-            self.event_bus.emit("save_scene", {})
+            self.event_bus.publish(Event("save_scene", {}))
 
     def _handle_mouse_down(self, event):
         """

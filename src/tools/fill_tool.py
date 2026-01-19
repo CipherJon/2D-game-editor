@@ -7,8 +7,7 @@ class FillTool(BaseTool):
     """
 
     def __init__(self):
-        super().__init__()
-        self.name = "Fill Tool"
+        super().__init__("Fill Tool")
         self.icon = "fill_icon.png"
 
     def on_activate(self):
@@ -23,20 +22,18 @@ class FillTool(BaseTool):
         """
         print("Fill Tool deactivated")
 
-    def on_mouse_down(self, position):
+    def handle_event(self, event):
         """
-        Handle mouse down events.
+        Handle pygame events.
+        Returns True if the event was consumed by this tool.
         """
-        print(f"Fill Tool: Mouse down at {position}")
+        print(f"Fill Tool handling event: {event}")
+        return False
 
-    def on_mouse_up(self, position):
-        """
-        Handle mouse up events.
-        """
-        print(f"Fill Tool: Mouse up at {position}")
+    def update(self, delta_time):
+        """Update the tool state."""
+        pass
 
-    def on_mouse_move(self, position):
-        """
-        Handle mouse move events.
-        """
-        print(f"Fill Tool: Mouse move to {position}")
+    def draw(self, surface):
+        """Draw tool-specific visuals."""
+        pass

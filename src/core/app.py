@@ -28,7 +28,7 @@ class App:
             "current_scene": None,
             "is_running": False,
         }
-        self.window: Optional[pygame.Surface] = None
+        self.window: pygame.Surface | None = None
         self.clock = pygame.time.Clock()
         self.editor_window: Optional[EditorWindow] = None
 
@@ -54,7 +54,8 @@ class App:
 
     def _initialize_subsystems(self):
         """Initialize all subsystems (e.g., renderer, asset manager, etc.)."""
-        self.editor_window = EditorWindow(self.window, self.event_bus)
+        if self.window is not None:
+            self.editor_window = EditorWindow(self.window, self.event_bus)
 
     def run(self):
         """Main application loop."""

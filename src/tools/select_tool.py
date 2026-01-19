@@ -3,13 +3,28 @@ from .base_tool import BaseTool
 
 class SelectTool(BaseTool):
     def __init__(self):
-        super().__init__()
+        super().__init__("Select Tool")
 
     def on_activate(self):
-        print("Select tool activated")
+        """Called when the tool is activated."""
+        print("Select Tool activated")
 
     def on_deactivate(self):
-        print("Select tool deactivated")
+        """Called when the tool is deactivated."""
+        print("Select Tool deactivated")
 
     def handle_event(self, event):
-        print(f"Select tool handling event: {event}")
+        """
+        Handle pygame events.
+        Returns True if the event was consumed by this tool.
+        """
+        print(f"Select Tool handling event: {event}")
+        return False
+
+    def update(self, delta_time):
+        """Update the tool state."""
+        pass
+
+    def draw(self, surface):
+        """Draw tool-specific visuals."""
+        pass
