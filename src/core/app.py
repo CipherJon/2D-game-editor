@@ -7,6 +7,7 @@ from typing import Optional
 
 import pygame
 
+from ..editor.editor_window import EditorWindow
 from .config import Config
 from .events import Event, EventBus
 from .types import AppState
@@ -29,6 +30,7 @@ class App:
         }
         self.window: Optional[pygame.Surface] = None
         self.clock = pygame.time.Clock()
+        self.editor_window: Optional[EditorWindow] = None
 
     def initialize(self) -> bool:
         """
@@ -52,8 +54,7 @@ class App:
 
     def _initialize_subsystems(self):
         """Initialize all subsystems (e.g., renderer, asset manager, etc.)."""
-        # Placeholder for subsystem initialization
-        pass
+        self.editor_window = EditorWindow(self.window, self.event_bus)
 
     def run(self):
         """Main application loop."""
@@ -67,24 +68,20 @@ class App:
 
     def _handle_events(self):
         """Process all pending events."""
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        if self.editor_window:
+            self.editor_window.handle_events()
+            if not self.editor_window.is_running:
                 self.state["is_running"] = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.state["is_running"] = False
-            self.event_bus.publish(Event(event.type, event))
 
     def _update(self):
         """Update the application state."""
-        # Placeholder for update logic
-        pass
+        if self.editor_window:
+            self.editor_window.update(self.clock.get_time() / 1000.0)
 
     def _render(self):
         """Render the current frame."""
-        if self.window:
-            self.window.fill((0, 0, 0))  # Clear the screen
-            pygame.display.flip()
+        if self.window and self.editor_window:
+            self.editor_window.render()
 
     def shutdown(self):
         """Clean up resources and shut down the application."""

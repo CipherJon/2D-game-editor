@@ -7,11 +7,10 @@ This module handles the main window layout, panels, and user interactions.
 import pygame
 from pygame.locals import *
 
-from ..core.app import App
 from ..core.events import EventBus
 from ..rendering.camera import Camera
 from ..scene.scene import Scene
-from ..ui.widgets import Button, Panel
+from ..ui.widgets import Button
 
 
 class EditorWindow:
@@ -19,14 +18,16 @@ class EditorWindow:
     The main editor window that composes all UI panels and handles user interactions.
     """
 
-    def __init__(self, app: App):
+    def __init__(self, window: pygame.Surface, event_bus: EventBus):
         """
-        Initialize the editor window with the main application instance.
+        Initialize the editor window with the main window surface and event bus.
 
         Args:
-            app (App): The main application instance.
+            window (pygame.Surface): The main window surface.
+            event_bus (EventBus): The event bus for handling events.
         """
-        self.app = app
+        self.window = window
+        self.event_bus = event_bus
         self.event_bus = EventBus()
         self.camera = Camera()
         self.scene = Scene()
@@ -48,12 +49,12 @@ class EditorWindow:
         from ..editor.panels.toolbar import ToolbarPanel
 
         self.panels = [
-            HierarchyPanel(self.app, self.event_bus, self.scene),
-            InspectorPanel(self.app, self.event_bus, self.scene),
-            AssetsBrowserPanel(self.app, self.event_bus),
-            TilePalettePanel(self.app, self.event_bus),
-            LayerPanel(self.app, self.event_bus, self.scene),
-            ToolbarPanel(self.app, self.event_bus),
+            HierarchyPanel(),
+            InspectorPanel(),
+            AssetsBrowserPanel(),
+            TilePalettePanel(),
+            LayerPanel(),
+            ToolbarPanel(),
         ]
 
     def handle_events(self):
@@ -125,30 +126,16 @@ class EditorWindow:
         for panel in self.panels:
             panel.update(delta_time)
 
-    def render(self, screen: pygame.Surface):
+    def render(self):
         """
         Render the editor window and all panels.
-
-        Args:
-            screen (pygame.Surface): The pygame screen surface.
         """
         # Clear the screen
-        screen.fill((30, 30, 30))
+        self.window.fill((30, 30, 30))
 
         # Render all panels
         for panel in self.panels:
-            panel.render(screen)
+            panel.render(self.window)
 
         # Flip the display
         pygame.display.flip()
-
-    def run(self):
-        """
-        Main loop for the editor window.
-        """
-        clock = pygame.time.Clock()
-        while self.is_running:
-            self.handle_events()
-            delta_time = clock.tick(60) / 1000.0
-            self.update(delta_time)
-            self.render(self.app.screen)

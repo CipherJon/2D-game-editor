@@ -7,7 +7,7 @@ manage assets such as sprites, tiles, and other resources.
 """
 
 
-class AssetsBrowser:
+class AssetsBrowserPanel:
     """
     A panel for browsing and managing assets in the editor.
 
@@ -18,7 +18,7 @@ class AssetsBrowser:
 
     def __init__(self):
         """
-        Initializes the AssetsBrowser with default values.
+        Initializes the AssetsBrowserPanel with default values.
         """
         self.assets = []
         self.selected_asset = None
@@ -53,3 +53,30 @@ class AssetsBrowser:
         print("Displaying Assets Browser Panel")
         print(f"Available Assets: {self.assets}")
         print(f"Selected Asset: {self.selected_asset}")
+
+    def render(self, screen):
+        """
+        Renders the assets browser panel.
+
+        Args:
+            screen (pygame.Surface): The screen surface to render to.
+        """
+        pass
+
+    def handle_event(self, event):
+        """
+        Handles events for the assets browser panel.
+
+        Args:
+            event (pygame.event.Event): The pygame event.
+        """
+        pass
+
+    def update(self, delta_time):
+        """
+        Updates the assets browser panel.
+
+        Args:
+            delta_time (float): Time elapsed since the last frame.
+        """
+        pass

@@ -1,3 +1,5 @@
+import pygame
+
 # toolbar.py
 """
 Toolbar panel for the 2D game editor.
@@ -5,7 +7,7 @@ This module provides the toolbar UI for the editor.
 """
 
 
-class Toolbar:
+class ToolbarPanel:
     """
     Represents the toolbar panel in the editor.
     The toolbar contains buttons for various tools and actions.
@@ -13,7 +15,7 @@ class Toolbar:
 
     def __init__(self):
         """
-        Initialize the toolbar.
+        Initialize the toolbar panel.
         """
         self.tools = []
         self.active_tool = None
@@ -36,12 +38,34 @@ class Toolbar:
         """
         self.active_tool = tool
 
-    def render(self):
+    def render(self, screen):
         """
         Render the toolbar UI.
+
+        Args:
+            screen (pygame.Surface): The screen surface to render to.
         """
-        print("Rendering toolbar...")
-        for tool in self.tools:
-            print(f"Tool: {tool}")
-        if self.active_tool:
-            print(f"Active Tool: {self.active_tool}")
+        # Draw a simple rectangle to represent the toolbar
+        pygame.draw.rect(screen, (100, 100, 100), (10, 120, 200, 50))
+        # Draw a label for the toolbar
+        font = pygame.font.SysFont(None, 24)
+        label = font.render("Toolbar", True, (255, 255, 255))
+        screen.blit(label, (20, 130))
+
+    def handle_event(self, event):
+        """
+        Handles events for the toolbar panel.
+
+        Args:
+            event (pygame.event.Event): The pygame event.
+        """
+        pass
+
+    def update(self, delta_time):
+        """
+        Updates the toolbar panel.
+
+        Args:
+            delta_time (float): Time elapsed since the last frame.
+        """
+        pass
